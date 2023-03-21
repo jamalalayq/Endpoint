@@ -1,3 +1,3 @@
-# HTTPSessionType
+# Endpoint
 
-Abstract network layer.
+Abstract Endpoint.

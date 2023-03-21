@@ -5,5 +5,5 @@
 import Foundation
 
 public protocol URLSessionType {
-    func request(endpoint: some Endpoint) async throws -> (any Decodable)?
+    func request(endpoint: some Endpoint) async throws -> any Decodable
 }

@@ -3,24 +3,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "HTTPSessionType",
+    name: "Endpoint",
     platforms: [.iOS(.v13)],
     products: [
         .library(
-            name: "HTTPSessionType",
-            targets: ["HTTPSessionType"]
+            name: "Endpoint",
+            targets: ["Endpoint"]
         ),
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "HTTPSessionType",
+            name: "Endpoint",
             dependencies: []
-        ),
-        .testTarget(
-            name: "HTTPSessionTypeTests",
-            dependencies: ["HTTPSessionType"]
-        ),
+        ),        
     ],
     swiftLanguageVersions: [.v5]
 )
