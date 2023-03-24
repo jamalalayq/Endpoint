@@ -17,12 +17,12 @@ public struct Header {
         self.value = value
     }
         
-    public static let contentTypeAppJSON: Self = .init(key: "ContentType", value: HeadersValues.applicationJSON)
-    public static let acceptAppJSON: Self = .init(key: "accept", value: HeadersValues.applicationJSON)
+    public static let contentTypeAppJSON: Self = .init(key: "Content-Type", value: HeadersValues.applicationJSON)
+    public static let acceptAppJSON: Self = .init(key: "Accept", value: HeadersValues.applicationJSON)
     
-    public static func acceptLanguage(_ language: String) -> Self {
-        .init(key: "Accept-Language", value: language)
-    }
+    public static func acceptLanguage(_ language: String) -> Self { .init(key: "Accept-Language", value: language) }
+    
+    public static func userAgent(_ value: String) -> Self { .init(key: "User-Agent", value: value) }
     
     public struct HeadersValues {
         public static let applicationJSON: String = "application/json"
@@ -36,50 +36,18 @@ extension Encodable {
 }
 
 extension URLRequest {
-    func asCURL() -> String {
-        let tab = "    "
-        let newLine = "\n"
-        
-        var command = #"curl -iv \"#
-        command.append(newLine)
-        command.append(tab)
-        command.append(#"-X \#(httpMethod ?? "GET") \"#)
-                       
-        command.append(newLine)
-        allHTTPHeaderFields?.forEach { key, value in
-            command.append(tab)
-            command.append(#"-H "\#(key): \#(value)" \"#)
-            command.append(newLine)
-         }
-                           
-        if let body = httpBody, let json = String(data: body, encoding: .utf8) {
-            command.append(tab)
-            command.append(#"-d '\#(json)' \"#)
-            command.append(newLine)
+    func toCURL() -> String {
+        var body: String = ""
+        if let httpBody {
+            body = String(decoding: httpBody, as:  UTF8.self)
         }
-                               
-        command.append(tab)
-        command.append(#" "\#(url?.absoluteString ?? "<EMPTY_URL>")" \"#)
-        command.append(newLine)
-               
-        command.append(tab)
-        command.append("-w ")
-        command.append(newLine)
-        command.append(newLine)
-        command.append("{{[ Time Calculations ]}}")
-        command.append(newLine)
-        command.append("->")
-        command.append("Connection Time: %{time_connect} [ s ]")
-        command.append(newLine)
-        command.append("->")
-        command.append("Transfer Time: %{time_starttransfer} [ s ]")
-        command.append(newLine)
-        command.append("->")
-        command.append("Total Time: %{time_total} [ s ]")
-        command.append(newLine)
-        command.append(newLine)
-        command.append("Created By Jamal Alaayq")
-        command.append(newLine)
-        return command
+        
+        return #"""
+
+curl --location --request \#(httpMethod ?? "GET") '\#(url?.absoluteString ?? "")' \
+\#((allHTTPHeaderFields ?? [:]).compactMap { "--header \'\($0): \($1)\' \\" }.joined(separator: "\n") )
+--data-raw '\#(body)'
+
+"""#
     }
 }

@@ -51,7 +51,7 @@ public extension Endpoint {
         defaultHeaders?.forEach { request.addValue($0.value, forHTTPHeaderField: $0.key) }
         headers?.forEach { request.addValue($0.value, forHTTPHeaderField: $0.key)}
         request.httpBody = try body?.asData(by: encoder)
-        if isDebuggable { debugPrint(url.lastPathComponent, ":", request.asCURL()) }
+        if isDebuggable { print(url.lastPathComponent, ":", request.toCURL()) }
         return request
     }
 }
